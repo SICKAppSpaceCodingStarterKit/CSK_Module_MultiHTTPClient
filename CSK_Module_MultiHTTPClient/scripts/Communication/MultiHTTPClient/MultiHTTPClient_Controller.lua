@@ -705,19 +705,18 @@ Script.serveFunction('CSK_MultiHTTPClient.setRequestPeriod', setRequestPeriod)
 --- Function to create new request based on currently configured request parameters
 ---@return auto[] requestParameters Parameters of request
 local function createRequestParameters()
-  local requestParameters = {}
-    requestParameters = {
-      requestName = multiHTTPClient_Instances[selectedInstance].requestName,
-      requestMode = multiHTTPClient_Instances[selectedInstance].requestMode,
-      requestEndpoint = multiHTTPClient_Instances[selectedInstance].requestEndpoint,
-      headers = multiHTTPClient_Instances[selectedInstance].headers,
-      requestPort = multiHTTPClient_Instances[selectedInstance].requestPort,
-      requestContent = multiHTTPClient_Instances[selectedInstance].requestContent,
-      requestContentType = multiHTTPClient_Instances[selectedInstance].requestContentType,
-      registeredEvent = multiHTTPClient_Instances[selectedInstance].registeredEvent,
-      requestPeriodic = multiHTTPClient_Instances[selectedInstance].requestPeriodic,
-      requestPeriod = multiHTTPClient_Instances[selectedInstance].requestPeriod
-    }
+  local requestParameters = {
+    requestName = multiHTTPClient_Instances[selectedInstance].requestName,
+    requestMode = multiHTTPClient_Instances[selectedInstance].requestMode,
+    requestEndpoint = multiHTTPClient_Instances[selectedInstance].requestEndpoint,
+    headers = helperFuncs.copy(multiHTTPClient_Instances[selectedInstance].headers),
+    requestPort = multiHTTPClient_Instances[selectedInstance].requestPort,
+    requestContent = multiHTTPClient_Instances[selectedInstance].requestContent,
+    requestContentType = multiHTTPClient_Instances[selectedInstance].requestContentType,
+    registeredEvent = multiHTTPClient_Instances[selectedInstance].registeredEvent,
+    requestPeriodic = multiHTTPClient_Instances[selectedInstance].requestPeriodic,
+    requestPeriod = multiHTTPClient_Instances[selectedInstance].requestPeriod
+  }
   return requestParameters
 end
 
@@ -795,7 +794,7 @@ local function setSelectedRequest(requestName)
     multiHTTPClient_Instances[selectedInstance].requestContentType = multiHTTPClient_Instances[selectedInstance].parameters.requests[requestName].requestContentType
     multiHTTPClient_Instances[selectedInstance].requestPeriodic = multiHTTPClient_Instances[selectedInstance].parameters.requests[requestName].requestPeriodic
     multiHTTPClient_Instances[selectedInstance].requestPeriod = multiHTTPClient_Instances[selectedInstance].parameters.requests[requestName].requestPeriod
-    multiHTTPClient_Instances[selectedInstance].headers = multiHTTPClient_Instances[selectedInstance].parameters.requests[requestName].headers
+    multiHTTPClient_Instances[selectedInstance].headers = helperFuncs.copy(multiHTTPClient_Instances[selectedInstance].parameters.requests[requestName].headers)
     multiHTTPClient_Instances[selectedInstance].registeredEvent = multiHTTPClient_Instances[selectedInstance].parameters.requests[requestName].registeredEvent
   else
     _G.logger:fine(nameOfModule .. ": Deselect request.")
