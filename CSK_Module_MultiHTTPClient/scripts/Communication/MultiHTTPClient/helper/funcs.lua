@@ -17,15 +17,20 @@ funcs.json = require('Communication/MultiHTTPClient/helper/Json')
 --**********************Start Function Scope *******************************
 --**************************************************************************
 
--- Function to create a deep copy of a table
---@copy(table):table
-local function copy(origTable, seen)
-  if type(origTable) ~= 'table' then return origTable end
-  if seen and seen[origTable] then return seen[origTable] end
-  local s = seen or {}
+--- Function to create a deep copy of a table
+---@param origTable auto[] Content to copy
+---@return auto[] res Clone of table
+local function copy(origTable)
+  if type(origTable) ~= 'table' then
+    return origTable
+  end
+
+  local s = {}
   local res = setmetatable({}, getmetatable(origTable))
   s[origTable] = res
-  for k, v in pairs(origTable) do res[copy(k, s)] = copy(v, s) end
+  for k, v in pairs(origTable) do
+    res[copy(k, s)] = copy(v, s)
+  end
   return res
 end
 funcs.copy = copy
