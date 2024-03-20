@@ -33,6 +33,7 @@ It is possible to prepare and save multiple requests per instance. There are som
 - INFO: The triggered calls for prepared requests will be checked by internal queues. The maximum size of this queues can be set for each client instance via 'setMaxQueueSize'. +
 - It is possible to edit requests by selecting them with their name via 'setSelectedRequest', change the request parameter via its 'setRequest...'-functions and update it via 'updateRequest'. +
 - INFO: The request name can NOT be updated. Please delete the request and add a new one to do so. +
+{empty} + 
 **4) Receive response** +
 The module will dynamically create events to provide the incoming response of the executed requests. Please check the 'OnNewResponseNUM' / 'OnNewResponseNUM_NAME'-event documentation. +</desc>
             <serves>
