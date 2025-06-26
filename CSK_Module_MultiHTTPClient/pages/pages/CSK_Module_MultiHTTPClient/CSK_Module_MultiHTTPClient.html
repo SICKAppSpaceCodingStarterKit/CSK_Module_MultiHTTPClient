@@ -520,13 +520,13 @@
                                                                                                         event="finished"
                                                                                                         crown-function="CSK_MultiHTTPClient/setCABundleFile"
                                                                                                         protocol="crownMSGPACK"
-                                                                                                        crown-path="success">
+                                                                                                        crown-path="success"
+                                                                                                        converter="(value)=>{console.log(`event finished ${JSON.stringify(value)}`); return typeof value == 'boolean' ? value : value.success;}">
                                                                                                     </crown-set>
-                                                                                                    <crown-edpws-binding
+                                                                                                    <crown-on
                                                                                                         property="disabled"
-                                                                                                        name="CSK_MultiHTTPClient/OnNewStatusClientActivated"
-                                                                                                        update-on-resume>
-                                                                                                    </crown-edpws-binding>
+                                                                                                        crown-event="CSK_MultiHTTPClient/OnNewStatusClientActivated">
+                                                                                                    </crown-on>
                                                                                                 </appspace-file-upload-button>
                                                                                             </layout-column>
                                                                                         </layout-row>
@@ -579,13 +579,13 @@
                                                                                                         event="finished"
                                                                                                         crown-function="CSK_MultiHTTPClient/setClientCertificateFile"
                                                                                                         protocol="crownMSGPACK"
-                                                                                                        crown-path="success">
+                                                                                                        crown-path="success"
+                                                                                                        converter="(value)=>{console.log(`event finished ${JSON.stringify(value)}`); return typeof value == 'boolean' ? value : value.success;}">
                                                                                                     </crown-set>
-                                                                                                    <crown-edpws-binding
+                                                                                                    <crown-on
                                                                                                         property="disabled"
-                                                                                                        name="CSK_MultiHTTPClient/OnNewStatusClientActivated"
-                                                                                                        update-on-resume>
-                                                                                                    </crown-edpws-binding>
+                                                                                                        crown-event="CSK_MultiHTTPClient/OnNewStatusClientActivated">
+                                                                                                    </crown-on>
                                                                                                 </appspace-file-upload-button>
                                                                                             </layout-column>
                                                                                         </layout-row>
@@ -633,13 +633,13 @@
                                                                                                         event="finished"
                                                                                                         crown-function="CSK_MultiHTTPClient/setClientCertificateKeyFile"
                                                                                                         protocol="crownMSGPACK"
-                                                                                                        crown-path="success">
+                                                                                                        crown-path="success"
+                                                                                                        converter="(value)=>{console.log(`event finished ${JSON.stringify(value)}`); return typeof value == 'boolean' ? value : value.success;}">
                                                                                                     </crown-set>
-                                                                                                    <crown-edpws-binding
+                                                                                                    <crown-on
                                                                                                         property="disabled"
-                                                                                                        name="CSK_MultiHTTPClient/OnNewStatusClientActivated"
-                                                                                                        update-on-resume>
-                                                                                                    </crown-edpws-binding>
+                                                                                                        crown-event="CSK_MultiHTTPClient/OnNewStatusClientActivated">
+                                                                                                    </crown-on>
                                                                                                 </appspace-file-upload-button>
                                                                                             </layout-column>
                                                                                         </layout-row>
