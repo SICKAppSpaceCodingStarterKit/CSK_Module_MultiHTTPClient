@@ -43,13 +43,13 @@ local function create(instance, requestName, mode, protocol, endpoint, port)
   local fullInstanceName = tostring(instance) .. tostring(requestName)
 
   -- Check if same instance is already configured
-  if instance < 1 or nil ~= instanceTable[fullInstanceName] then
+  if instanceTable[fullInstanceName] ~= nil then
     _G.logger:warning(nameOfModule .. ': Instance invalid or already in use, please choose another one')
     return nil
   else
     -- Otherwise create handle and store the restriced resource
     local handle = Container.create()
-    instanceTable[instance] = instance
+    instanceTable[fullInstanceName] = fullInstanceName
     Container.add(handle, 'Instance', instance)
     Container.add(handle, 'RequestName', requestName)
     Container.add(handle, 'Mode', mode)
