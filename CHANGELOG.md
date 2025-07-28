@@ -1,6 +1,25 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Release 2.2.0
+
+### New features
+- Basic authentication setup
+- New function 'sendRequest'
+- Check if persistent data to load provides all relevant parameters. Otherwise add default values
+
+### Improvements
+- 'sendInternalRequest' returns now the HTTP response
+- FlowConfig handling
+- Minor docu improvements
+
+### Bugfix
+- Wrong instance handling within FlowConfig
+- FlowConfig priority was not instance specific
+- Legacy bindings of ValueDisplay elements and FileUpload feature within UI did not work if deployed with VS Code AppSpace SDK
+- UI differs if deployed via Appstudio or VS Code AppSpace SDK
+- Fullscreen icon of iFrame was visible
+
 ## Release 2.1.0
 
 ### New features
