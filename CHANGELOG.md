@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Release 2.3.0
+
+### Improvements
+- Dynamically created function "sendRequestNUM" return now the HTTPClient.Response as second return value.
+- Parameter "logContent" within "sendRequestNUM" function can configure if the full HTTP response content should be logged. Set to FALSE to prevent unnecessary high processing loads for bigger data content like images.
+
+### Bugfix
+- Headers did not work via sendRequestNUM
+- Headers were mixed up for requests send via UI and sendRequestNUM function
+
 ## Release 2.2.0
 
 ### New features

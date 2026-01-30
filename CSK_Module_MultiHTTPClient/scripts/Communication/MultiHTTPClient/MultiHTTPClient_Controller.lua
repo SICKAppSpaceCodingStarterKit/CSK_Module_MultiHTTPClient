@@ -669,6 +669,15 @@ Script.serveFunction('CSK_MultiHTTPClient.setRequestPort', setRequestPort)
 
 local function sendRequestViaUI()
   if multiHTTPClient_Instances[selectedInstance].parameters.clientActivated == true then
+    Script.notifyEvent("MultiHTTPClient_OnNewProcessingParameter", selectedInstance, 'requestMode', multiHTTPClient_Instances[selectedInstance].requestMode)
+    Script.notifyEvent("MultiHTTPClient_OnNewProcessingParameter", selectedInstance, 'requestEndpoint', multiHTTPClient_Instances[selectedInstance].requestEndpoint)
+    Script.notifyEvent("MultiHTTPClient_OnNewProcessingParameter", selectedInstance, 'requestPort', multiHTTPClient_Instances[selectedInstance].requestPort)
+
+    Script.notifyEvent("MultiHTTPClient_OnNewProcessingParameter", selectedInstance, 'setHeaders', json.encode(multiHTTPClient_Instances[selectedInstance].headers))
+
+    Script.notifyEvent("MultiHTTPClient_OnNewProcessingParameter", selectedInstance, 'requestContentType', multiHTTPClient_Instances[selectedInstance].requestContentType)
+    Script.notifyEvent("MultiHTTPClient_OnNewProcessingParameter", selectedInstance, 'requestContent', multiHTTPClient_Instances[selectedInstance].requestContent)
+
     Script.notifyEvent("MultiHTTPClient_OnNewProcessingParameter", selectedInstance, 'sendRequest')
   else
     _G.logger:fine(nameOfModule .. ": Client currently not active.")
@@ -703,7 +712,6 @@ local function addHeader()
   _G.logger:fine(nameOfModule .. ": Add header key = " .. tostring(multiHTTPClient_Instances[selectedInstance]['headerKey']) .. " with value = " .. tostring(multiHTTPClient_Instances[selectedInstance]['headerValue']))
   multiHTTPClient_Instances[selectedInstance].headers[multiHTTPClient_Instances[selectedInstance]['headerKey']] = multiHTTPClient_Instances[selectedInstance]['headerValue']
   multiHTTPClient_Instances[selectedInstance].selectedHeaderKey = multiHTTPClient_Instances[selectedInstance]['headerKey']
-  Script.notifyEvent("MultiHTTPClient_OnNewProcessingParameter", selectedInstance, 'headerUpdate', multiHTTPClient_Instances[selectedInstance]['headerKey'], multiHTTPClient_Instances[selectedInstance]['headerValue'])
   handleOnExpiredTmrMultiHTTPClient()
 end
 Script.serveFunction('CSK_MultiHTTPClient.addHeader', addHeader)
@@ -712,7 +720,6 @@ local function deleteHeader()
   _G.logger:fine(nameOfModule .. ": Delete header key = " .. tostring(multiHTTPClient_Instances[selectedInstance]['headerKey']))
   multiHTTPClient_Instances[selectedInstance].headers[multiHTTPClient_Instances[selectedInstance]['headerKey']] = nil
   collectgarbage()
-  Script.notifyEvent("MultiHTTPClient_OnNewProcessingParameter", selectedInstance, 'deleteHeader', multiHTTPClient_Instances[selectedInstance]['headerKey'])
 
   local check = false
   for key, _ in pairs(multiHTTPClient_Instances[selectedInstance].headers) do

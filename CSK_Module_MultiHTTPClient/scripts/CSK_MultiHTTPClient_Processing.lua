@@ -190,8 +190,10 @@ end
 ---@param tempRequestActive bool Status if it is just a temporarly configured request or a preconfigured one
 ---@param showResponse bool Status if response should be notified as event (e.g. to show it on UI)
 ---@param eventName string? Optional name of event to notify the response
+---@param logContent bool? Set status if full respond content should be logged
 ---@return string response Response of HTTP request
-local function sendInternalRequest(tempRequestActive, showResponse, eventName)
+---@return HTTPClient.Response response Response of HTTP request
+local function sendInternalRequest(tempRequestActive, showResponse, eventName, logContent)
 
   local timerQueueSize = 0
   local eventQueueSize = 0
@@ -248,8 +250,10 @@ local function sendInternalRequest(tempRequestActive, showResponse, eventName)
         end
       end
 
-      jsonResponse.Response = HTTPClient.Response.getContent(response)
-      responseMessage = responseMessage .. helperFuncs.jsonLine2Table(HTTPClient.Response.getContent(response)) .. '\n'
+      if logContent then
+        responseMessage = responseMessage .. helperFuncs.jsonLine2Table(HTTPClient.Response.getContent(response)) .. '\n'
+        jsonResponse.Response = HTTPClient.Response.getContent(response)
+      end
     else
       local error = HTTPClient.Response.getError(response)
       local errorDetail = HTTPClient.Response.getErrorDetail(response)
@@ -268,12 +272,26 @@ local function sendInternalRequest(tempRequestActive, showResponse, eventName)
         Script.notifyEvent("MultiHTTPClient_OnNewValueToForward" .. multiHTTPClientInstanceNumberString, "MultiHTTPClient_OnNewResponseMessage", responseMessage)
       end
     end
-    return json.encode(jsonResponse)
+    local encodedData = json.encode(jsonResponse)
+    return encodedData, response
   end
 end
 
-local function sendRequest(mode, endpoint, port, header, body, contentType)
-  processingParams.extendedResponse = true
+local function sendRequest(mode, endpoint, port, header, body, contentType, logContent)
+  processingParams.headers = {}
+  if header ~= nil and header ~= '' then
+    local headerTable = json.decode(header)
+    for key, value in pairs(headerTable) do
+      processingParams.headers[key] = value
+    end
+  end
+
+  if contentType ~= nil then
+    processingParams.requestContentType = contentType
+  else
+    processingParams.requestContentType = 'application/json'
+  end
+
   processingParams.requestMode = mode
   processingParams.requestEndpoint = endpoint
   processingParams.requestPort = port
@@ -284,11 +302,16 @@ local function sendRequest(mode, endpoint, port, header, body, contentType)
     processingParams.requestContent = ''
   end
 
-  local response = sendInternalRequest(true, false)
+  local responseString, response
+  if logContent == true or logContent == nil then
+    responseString, response = sendInternalRequest(true, false, nil, true)
+  else
+    responseString, response = sendInternalRequest(true, false, nil, false)
+  end
 
-  return response
+  return responseString, response
 end
-Script.serveFunction('CSK_MultiHTTPClient.sendRequest' .. multiHTTPClientInstanceNumberString, sendRequest, 'string, string, int, string:?, string:?, string:?', 'string')
+Script.serveFunction('CSK_MultiHTTPClient.sendRequest' .. multiHTTPClientInstanceNumberString, sendRequest, 'string, string, int, string:?, string:?, string:?, bool:?', 'string:1, object:?:HTTPClient.Response')
 
 --- Function to set timer if request should be executed periodically
 ---@param requestName string Name of preconfigured request
@@ -303,9 +326,9 @@ local function setTimer(requestName)
       if processingParams.clientActivated then
         setSpecificRequest(requestName)
         if selectedRequest == requestName then
-          sendInternalRequest(false, true, "MultiHTTPClient_OnNewReponse" .. multiHTTPClientInstanceNumberString .. '_' .. processingParams.requests[requestName].requestName)
+          sendInternalRequest(false, true, "MultiHTTPClient_OnNewReponse" .. multiHTTPClientInstanceNumberString .. '_' .. processingParams.requests[requestName].requestName, true)
         else
-          sendInternalRequest(false, false, "MultiHTTPClient_OnNewReponse" .. multiHTTPClientInstanceNumberString .. '_' .. processingParams.requests[requestName].requestName)
+          sendInternalRequest(false, false, "MultiHTTPClient_OnNewReponse" .. multiHTTPClientInstanceNumberString .. '_' .. processingParams.requests[requestName].requestName, true)
         end
       end
     end
@@ -349,9 +372,9 @@ local function setRegisteredEvent(requestName)
         end
         setSpecificRequest(requestName)
         if selectedRequest == requestName then
-          sendInternalRequest(false, true, "MultiHTTPClient_OnNewReponse" .. multiHTTPClientInstanceNumberString .. '_' .. processingParams.requests[requestName].requestName)
+          sendInternalRequest(false, true, "MultiHTTPClient_OnNewReponse" .. multiHTTPClientInstanceNumberString .. '_' .. processingParams.requests[requestName].requestName, true)
         else
-          sendInternalRequest(false, false, "MultiHTTPClient_OnNewReponse" .. multiHTTPClientInstanceNumberString .. '_' .. processingParams.requests[requestName].requestName)
+          sendInternalRequest(false, false, "MultiHTTPClient_OnNewReponse" .. multiHTTPClientInstanceNumberString .. '_' .. processingParams.requests[requestName].requestName, true)
         end
       end
     end
@@ -544,14 +567,18 @@ local function handleOnNewProcessingParameter(multiHTTPClientNo, parameter, valu
 
     elseif parameter == 'sendRequest' then
       if processingParams.clientActivated then
-        sendInternalRequest(true, true)
+        sendInternalRequest(true, true, nil, true)
       end
 
-    elseif parameter == 'headerUpdate' then
-      processingParams.headers[value] = value2
+    elseif parameter == 'setHeaders' then
+      processingParams.headers = {}
 
-    elseif parameter == 'deleteHeader' then
-      deleteHeader(value)
+      if value ~= nil and value ~= '""' then
+        local headerTable = json.decode(value)
+        for headerKey, headerValue in pairs(headerTable) do
+          processingParams.headers[headerKey] = headerValue
+        end
+      end
 
     elseif parameter == 'selectedRequest' then
       if value then
