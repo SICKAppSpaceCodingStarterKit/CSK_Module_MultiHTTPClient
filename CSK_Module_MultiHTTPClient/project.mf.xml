@@ -529,9 +529,11 @@ Needs then to be called via "Script.callFunction".</desc>
                     <param desc="Endpoint" multiplicity="1" name="endpoint" type="string"/>
                     <param desc="Port" multiplicity="1" name="port" type="int"/>
                     <param desc="Optional list of headers (JSON)." multiplicity="?" name="header" type="string"/>
-                    <param desc="Body content (JSON)." multiplicity="?" name="body" type="string"/>
+                    <param desc="Optional body content (JSON)." multiplicity="?" name="body" type="string"/>
                     <param desc="Type of content." multiplicity="?" name="contentType" type="string"/>
+                    <param desc="Set status if full respond content should be logged.&#10;Set to false if e.g. bigger binary data should not be processed." multiplicity="?" name="logContent" type="bool"/>
                     <return desc="Response (JSON)" multiplicity="1" name="response" type="string"/>
+                    <return alias="HTTPClient.Response" desc="Response" multiplicity="?" name="response" type="object"/>
                 </function>
             </serves>
         </crown>
@@ -563,7 +565,7 @@ Needs then to be called via "Script.callFunction".</desc>
             </crown>
         </crown>
         <meta key="author">SICK AG</meta>
-        <meta key="version">2.2.0</meta>
+        <meta key="version">2.3.0</meta>
         <meta key="priority">low</meta>
         <meta key="copy-protected">false</meta>
         <meta key="read-protected">false</meta>
